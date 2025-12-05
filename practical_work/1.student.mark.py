@@ -38,6 +38,9 @@ def input_student_marks(course_id, isAll = True):
 #List functions
 
 def list_students():
+    if (len(students) < 1):
+        print("No student!")
+        return
     print("=== Students ===")
     for student in students:
         print("Id: ", student['id'])
@@ -46,6 +49,9 @@ def list_students():
         print('-' * 5)
 
 def list_courses():
+    if (len(courses) < 1):
+        print("No course!")
+        return
     print("=== Courses ===")
     for course in courses:
         print("Id: ", course['id'])
@@ -53,6 +59,8 @@ def list_courses():
         print('-' * 5)
 
 def show_student_marks():
+    if (len(marks) < 1):
+        print("No students!")
     for c_id, s_map in marks.items():
         print(f'Marks for {c_id}')
         for s_id, s_mark in s_map.items():
@@ -62,24 +70,15 @@ def show_student_marks():
          
 
 def main():
-
-    ns = input_number_students()
-    for _ in range(ns):
-        new_s = create_student()
-        students.append(new_s)
-
-    nc = input_number_courses()
-    for _ in range(nc):
-        new_c = create_course()
-        courses.append(new_c)
-
     while True:
         print("=== Menu ===")
         print("1. List students")
         print("2. List courses")
-        print("3. List marks for all courses")
-        print("4. Input marks in a course")
-        print("5. Input marks for all courses")
+        print("3. Create student")
+        print("4. Create course")
+        print("5. List marks for all courses")
+        print("6. Input marks in a course")
+        print("7. Input marks for all courses")
 
         print("Choose your choice: ")
         choice = int(input("Enter: "))
@@ -87,7 +86,7 @@ def main():
         if choice == 1:
             list_students()
         elif choice == 2:
-            list_courses
+            list_courses()
         elif choice == 3:
             show_student_marks()
         elif choice == 4:
