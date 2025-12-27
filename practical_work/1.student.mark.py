@@ -68,7 +68,7 @@ def show_student_marks():
             print(f"{name} - {s_id}: {s_mark}")
         print('-' * 10)
          
-
+    
 def main():
     while True:
         print("=== Menu ===")
