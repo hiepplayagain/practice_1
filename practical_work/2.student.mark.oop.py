@@ -1,86 +1,168 @@
-class Student:
-    def __init__(self, id, name, dob):
-        self.id = id
-        self.name = name
-        self.dob = dob
+from abc import ABC, abstractmethod
+
+class Entity(ABC):
+    @abstractmethod
+    def input(self):
+        pass
     
-    @staticmethod
-    def create_table(n):
-        students = []
-        for i in range(n):
-            print(f"\nEnter student {i+1}: ")
-            id = int(input("Id: "))
-            name = input("Name: ")
-            dob = input("Date of birth: ")
-            students.append(Student(id, name, dob))
-        return students
+    @abstractmethod
+    def display(self):
+        pass
 
-    @staticmethod
-    def list(students):
-        print("\n=== STUDENT LIST ===")
-        for s in students:
-            print(f"ID: {s.id} | Name: {s.name} | DOB: {s.dob}")
-
-
-class Course:
-    def __init__(self, id, name):
-        self.id = id
-        self.name = name
-
-    @staticmethod
-    def create_table(n):
-        courses = []
-        for i in range(n):
-            print(f"\nEnter course {i+1}: ")
-            id = int(input("Id: "))
-            name = input("Name: ")
-            courses.append(Course(id, name))
-        return courses
-
-    @staticmethod
-    def list(courses):
-        print("\n=== COURSE LIST ===")
-        for c in courses:
-            print(f"ID: {c.id} | Name: {c.name}")
-
-
-class Mark:
+class Student(Entity):
     def __init__(self):
-        self.marks = {}
+        self._id = None
+        self._name = None
+        self._dob = None
+    
+    def input(self):
+        self._id = int(input("ID: "))
+        self._name = input("Name: ")
+        self._dob = input('Date of birth: ')
+    
+    def display(self):
+        print(f"Id: {self._id}| Name: {self._name}| DoB: {self._dob}")
 
-    def add_mark(self, students, courses):
+class Course(Entity):
+    def __init__(self):
+        self._id = None
+        self._name = None
+    
+    def input(self):
+        self._id = int(input(f"ID:"))
+        self._name = input("Name: ")
+    
+    def display(self):
+        print(f"Id: {self._id}| Name: {self._name}")
+
+class Mark(Entity):
+    def __init__(self):
+        self._mark = {}
+    
+    def input(self, students, courses):
         for course in courses:
-            print(f"Enter marks for course: {course.name}")
-            mark_students = {}
+            print(f"\nEnter mark for course: {course._name}")
+            self._mark[course._id] = {}
 
             for student in students:
-                mark = float(input(f"Enter mark for {student.name}: "))
-                mark_students[student.id] = mark
+                mark = float(input(f"Mark for {student._name}: "))
+                self._mark[course._id][student._id] = mark
+    
+    def display(self):
+        print("=== Mark lists ===")
 
-            self.marks[course.id] = mark_students
-
-    def list(self):
-        print("=== Marks ===")
-        for course_id, student_marks in self.marks.items():
+        for course_id, student_marks in self._mark.items():
             print(f"Course ID: {course_id}")
             for student_id, mark in student_marks.items():
-                print(f"  Student {student_id}: {mark}")
+                print(f"Student {student_id}: {mark}")
 
+class Manager:
+    def __init__(self):
+        self.students = []
+        self.courses = []
+        self.marks = Mark()
+    
+    def input_students(self):
+        n = int(input("Input number students: "))
+
+        for i in range(n):
+            print(f"Student {i + 1}: ")
+            s = Student()
+            s.input()
+            self.students.append(s)
+
+    def add_student(self):
+        i = len(self.students)
+        print(f"Student {i + 1}: ")
+        s = Student()
+        s.input()
+        self.students.append(s)
+
+    def input_course(self):
+        n = int(input("Input number courses: "))
+
+        for i in range(n):
+            print(f"Course {i + 1}: ")
+            c = Course()
+            c.input()
+            self.courses.append(c)
+
+    def add_course(self):
+        i = len(self.courses)
+        print(f"Course {i + 1}: ")
+        c = Course()
+        c.input()
+        self.courses.append(c)
+
+    def list_students(self):
+        if not self.students:
+            print("No student! You need to add one or more students first!")
+            return
+        for s in self.students:
+            s.display()
+
+    def list_courses(self):
+        if not self.courses:
+            print("No course! You need to add one or more courses first!")
+            return
+        for c in self.courses:
+            c.display()
+
+    def input_mark(self):
+        self.marks.input(self.students, self.courses)
+
+    def list_marks(self):
+        self.marks.display()        
 
 def main():
-    n_st = int(input("Enter number of students: "))
-    students = Student.create_table(n_st)
+    print("======= Menu ====== ")
+    print("1. Add many students")
+    print("2. Add a student")
+    print("3. Add many courses")
+    print("4. Add a course")
+    print("5. List all students")
+    print("6. List all courses")
+    print("7. Input mark for all courses")
+    print("8. Input mark for a course")
+    print("9. List all marks")
+    print("10. List all marks of a course")
+    print("====================")
 
-    n_co = int(input("\nEnter number of courses: "))
-    courses = Course.create_table(n_co)
+    manager = Manager()
+    while True:
+        choice = int(input("Your choice: "))
+        if choice == 1:
+            manager.input_students()
 
-    Student.list(students)
-    Course.list(courses)
+        elif choice == 2:
+            manager.add_student()
 
-    marks = Mark()
-    marks.add_mark(students, courses)
-    marks.list()
+        elif choice == 3:
+            manager.input_course()
 
+        elif choice == 4:
+            manager.add_course()
 
-if __name__ == '__main__':
+        elif choice == 5:
+            manager.list_students()
+
+        elif choice == 6:
+            manager.list_courses()
+
+        elif choice == 7:
+            manager.input_mark()
+
+        elif choice == 8:
+            print("The function is updating! It will be available!")
+
+        elif choice == 9:
+            manager.list_marks()
+
+        elif choice == 10:
+            print("The function is updating! It will be available!")
+
+        else:
+            print("Not have this command! Retry!")
+
+if __name__ == "__main__":
     main()
